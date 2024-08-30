@@ -1,0 +1,8 @@
+<li @if(Request()->segment(2) == 'trip_logs') class="active" @endif><a href="{{ url('staff/trip_logs/'.Request()->segment(3)) }}" style="cursor: pointer;">Trip Log</a></li>
+<li @if(Request()->segment(2) == 'fuel_logs') class="active" @endif><a href="{{ url('staff/fuel_logs/'.Request()->segment(3)) }}" style="cursor: pointer;">Fuel Log</a></li>
+<li @if(Request()->segment(2) == 'insurances') class="active" @endif><a href="{{ url('staff/insurances/'.Request()->segment(3)) }}" style="cursor: pointer;">Insurance</a></li>
+<li @if(Request()->segment(2) == 'service_logs') class="active" @endif><a href="{{ url('staff/service_logs/'.Request()->segment(3)) }}" style="cursor: pointer;">Service Log</a></li>
+<li @if(Request()->segment(2) == 'cleaning_logs') class="active" @endif><a href="{{ url('staff/cleaning_logs/'.Request()->segment(3)) }}" style="cursor: pointer;">Cleaning Log</a></li>
+<li @if(Request()->segment(2) == 'repair_logs') class="active" @endif><a href="{{ url('staff/repair_logs/'.Request()->segment(3)) }}" style="cursor: pointer;">Repair Log</a></li>
+<li @if(Request()->segment(2) == 'accidents') class="active" @endif><a href="{{ url('staff/accidents/'.Request()->segment(3)) }}" style="cursor: pointer;">Accident History</a></li>
+<li @if(Request()->segment(2) == 'inspections') class="active" @endif><a href="{{ url('staff/inspections/'.Request()->segment(3)) }}" style="cursor: pointer;">Inspections</a></li>
