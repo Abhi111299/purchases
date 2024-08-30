@@ -55,7 +55,7 @@ use App\Http\Controllers\Staff\StaffProfileController;
 use App\Http\Controllers\Staff\StaffLogoutController;
 use App\Http\Controllers\Admin\AdminPurchaseRequestController;
 use App\Http\Controllers\Staff\StaffPurchaseRequestController;
-
+use App\Http\Controllers\Admin\AdminSupplierController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -192,6 +192,11 @@ Route::middleware(['checkadmin'])->group(function () {
         Route::match(['get','post'],'edit_purchase_request/{id}', [AdminPurchaseRequestController::class, 'edit_purchase_request']);
         Route::get('delete_purchase_request/{id}', [AdminPurchaseRequestController::class, 'destroy']);
         
+        // Supplier
+
+        Route::get('supplier', [AdminSupplierController::class, 'index']);
+        Route::match(['get','post'],'add_supplier', [AdminSupplierController::class, 'add_supplier']);
+
         //Asset
 
         Route::get('assets', [AdminAssetController::class, 'index']);
