@@ -208,6 +208,7 @@
           <li><a href="{{ url("admin/departments") }}">Departments</a></li>
           <li><a href="{{ url("admin/manufacturers") }}">Manufacturers</a></li>
           <li><a href="{{ url("admin/models") }}">Models</a></li>
+          <li><a href="{{ url("admin/supplier") }}">Supplier</a></li>
         </ul>
       </li>
     </ul>
