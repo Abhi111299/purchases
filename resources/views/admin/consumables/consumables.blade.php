@@ -1,12 +1,12 @@
 @extends("admin.layouts.app")
-@section("title", config("constants.site_title") . " | Procurement  ")
+@section("title", config("constants.site_title") . " | Consumable  ")
 @section("contents")
   <section class="content">
     <div class="d-flex justify-content-between align-items-center pb-4">
-      <h4 class="text-white">Supplier List  </h4>
+      <h4 class="text-white">Consumable List  </h4>
       <div>
-        <a href="{{ url("admin/add_supplier") }}" id="excel_download" class="btn btn-white"><i
-            class="fa fa-download"></i> Add Supplier</a>
+        <a href="{{ url("admin/add_consumable") }}" id="excel_download" class="btn btn-white"><i
+            class="fa fa-download"></i> Add Consumable</a>
       </div>
     </div>
 
@@ -25,18 +25,18 @@
           <div class="card-body">
 
             <div class="table-responsive">
-              <table id="supplier_record_table" class="table " style="width: 100%">
+              <table id="consumable_table" class="table " style="width: 100%">
                 <thead>
                   <tr class="info">
                     <th>#</th>
-                    <th>Supplier Name</th>
-                    <th>Email</th>
-                    <th>Address</th>
-                    <th>State</th>
-                    <th>Country</th>
-                    <th>Postal Code</th>
-                    <th>Phone No.</th>
-                    <th style="white-space:nowrap">Action</th>
+                    <th>Purchase Order Number</th>
+                    <th>Purchase Order Date </th>
+                    <th>Delivery Date </th>
+                    <th>Quotation Number </th>
+                    <th>Total Cost </th>
+                    <th>Supplier Name </th>
+                    <th>Requested By </th>
+                    <th style="white-space:nowrap">File Download</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -50,45 +50,44 @@
   </section>
 @endsection
 @section("custom_script")
-
-<script>
-    var dataTable = $('#supplier_record_table').DataTable({
+  <script>
+    var dataTable = $('#consumable_table').DataTable({
       processing: true,
       serverSide: true,
       "pageLength": 25,
       'ajax': {
         type: 'POST',
-        url: "{{ url("admin/get_supplier_lists") }}",
+        url: "{{ url("admin/get_consumables") }}",
         'data': function(data) {
 
           var token = "{{ csrf_token() }}";
 
-          data._token = token; console.log(data);
+          data._token = token;
         }
       },
       columns: [{
           data: 'DT_RowIndex'
         },
         {
+          data: 'purchase_order_number'
+        },
+        {
+          data: 'purchase_order_date'
+        },
+        {
+          data: 'delivery_date'
+        },
+        {
+          data: 'quotation_number'
+        },
+        {
+          data: 'total'
+        },
+        {
           data: 'supplier_name'
         },
         {
-          data: 'email'
-        },
-        {
-          data: 'address'
-        },
-        {
-          data: 'state'
-        },
-        {
-          data: 'county'
-        },
-        {
-          data: 'post_code'
-        },
-        {
-          data: 'phone'
+          data: 'requested_by'
         },
         {
           data: 'action',
