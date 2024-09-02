@@ -325,7 +325,8 @@ Route::middleware(['checkadmin'])->group(function () {
         Route::match(['get','post'],'add_consumable', [AdminConsumableController::class, 'add_consumable']);
         Route::match(['get','post'],'edit_consumable/{id}', [AdminConsumableController::class, 'edit_consumable']);
         Route::get('consumable_status/{id}/{status}', [AdminConsumableController::class, 'consumable_status']);
-
+        Route::get('download_consumable_pdf/{id}', [AdminConsumableController::class, 'downloadPDF']);
+        Route::get('delete_consumable/{id}', [AdminConsumableController::class, 'destroy']);
         //Location
 
         Route::get('locations', [AdminLocationController::class, 'index']);
