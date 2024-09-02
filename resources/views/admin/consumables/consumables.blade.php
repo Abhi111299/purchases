@@ -87,7 +87,7 @@
           data: 'supplier_name'
         },
         {
-          data: 'requested_by'
+          data: 'consumable_added_by'
         },
         {
           data: 'action',

@@ -63,7 +63,7 @@
 
     <div class="header">
         <div>
-            <img src="ARL_Logo.png" alt="ARL Logo"> <!-- Replace with actual logo path -->
+            <img src="{{ asset('images/pdflogo.png') }}" alt="ARL Logo"> <!-- Replace with actual logo path -->
         </div>
         <div class="company-details">
             <strong>Head Office - Sydney</strong><br>
