@@ -61,19 +61,19 @@
 </head>
 <body>
 
-    <div class="header">
-        <div>
-            <img src="{{ asset('images/pdflogo.png') }}" alt="ARL Logo"> <!-- Replace with actual logo path -->
-        </div>
-        <div class="company-details">
-            <strong>Head Office - Sydney</strong><br>
-            145-61 Pine Rd, Yennora NSW 2161<br>
-            PO Box 462 Auburn NSW 1835<br>
-            Phone: +61 2 9681 1316 & 9632 3077<br>
-            <strong>Branch Office - Brisbane</strong><br>
-            Unit 11 / 1378 Lytton Rd, (PO Box 7122) Hemmant QLD 4174<br>
-        </div>
+<div class="header" style="display: flex; justify-content: space-between; align-items: center;">
+<div>
+            <img src="{{ public_path('images/pdflogo.png')  }}" alt="ARL Logo" style="max-height: 100px;"> <!-- Replace with actual logo path -->
+            </div>
+    <div class="company-details" style="text-align: right;">
+        <strong>Head Office - Sydney</strong><br>
+        145-61 Pine Rd, Yennora NSW 2161<br>
+        PO Box 462 Auburn NSW 1835<br>
+        Phone: +61 2 9681 1316 & 9632 3077<br>
+        <strong>Branch Office - Brisbane</strong><br>
+        Unit 11 / 1378 Lytton Rd, (PO Box 7122) Hemmant QLD 4174<br>
     </div>
+</div>
 
     <table class="supplier-details">
         <tr>
