@@ -334,7 +334,19 @@ class AdminConsumableOrderController extends Controller
                         'description' => $item['description'],
                         'quantity' => $item['quantity'],
                         'cost' => $item['cost'],
+                        'total_per_item' => $item['total_per_item']
                     ]);
+                }
+
+                $itemsWithNames = [];
+                foreach ($items as $item) {
+                    $itemDetails = Consumable::find($item['item']);
+                    $itemsWithNames[] = [
+                        'item' => $itemDetails ? $itemDetails->consumable_name : 'N/A', // Replace 'name' with the actual column for item names
+                        'description' => $item['description'],
+                        'quantity' => $item['quantity'],
+                        'cost' => $item['cost'],
+                    ];
                 }
 
                 $pdf = PDF::loadView('pdf_templates.purchase_order', [
