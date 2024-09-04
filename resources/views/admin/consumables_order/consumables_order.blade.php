@@ -5,7 +5,7 @@
     <div class="d-flex justify-content-between align-items-center pb-4">
       <h4 class="text-white">Consumable List  </h4>
       <div>
-        <a href="{{ url("admin/add_consumable") }}" id="excel_download" class="btn btn-white"><i
+        <a href="{{ url("admin/add_consumable_order") }}" id="excel_download" class="btn btn-white"><i
             class="fa fa-download"></i> Add Consumable</a>
       </div>
     </div>
@@ -25,7 +25,7 @@
           <div class="card-body">
 
             <div class="table-responsive">
-              <table id="consumable_table" class="table " style="width: 100%">
+              <table id="consumable_order_table" class="table " style="width: 100%">
                 <thead>
                   <tr class="info">
                     <th>#</th>
@@ -51,13 +51,13 @@
 @endsection
 @section("custom_script")
   <script>
-    var dataTable = $('#consumable_table').DataTable({
+    var dataTable = $('#consumable_order_table').DataTable({
       processing: true,
       serverSide: true,
       "pageLength": 25,
       'ajax': {
         type: 'POST',
-        url: "{{ url("admin/get_consumables") }}",
+        url: "{{ url("admin/get_consumables_order") }}",
         'data': function(data) {
 
           var token = "{{ csrf_token() }}";

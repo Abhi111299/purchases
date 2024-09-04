@@ -19,4 +19,9 @@ class Consumabl extends Model
         return $this->hasMany(ConsumableItem::class, 'consumable_id', 'id');
     }
 
+    public function supplier()
+    {
+        return $this->belongsTo(Supplier::class, 'supplier_name');
+    }
+
 }

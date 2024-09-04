@@ -31,7 +31,7 @@
           </a>
           <ul class="treeview-menu @if (isset($set) && ($set == "customers" || $set == "add_purchase_request" || $set == "edit_customer")) menu-open @endif">
             <li><a href="{{ url("admin/purchase_request") }}">Purchase Request </a></li>
-            <li><a href="{{ url("admin/consumables") }}">Consumables </a></li>
+            <li><a href="{{ url("admin/consumables_order") }}">Consumables </a></li>
           </ul>
         </li>
       @endif

@@ -36,7 +36,6 @@ class AdminSupplierController extends Controller
         }
 
         $data['suppliers'] = Supplier::orderby('id', 'asc')->get();
-        // dd($data['suppliers']);
         $data['set'] = 'supplier';
         return $data;
     }
@@ -67,6 +66,7 @@ class AdminSupplierController extends Controller
             } else {
                 $ins['supplier_name']      = $request->supplier_name;
                 $ins['phone']           = $request->phone;
+                $ins['address']           = $request->address;
                 $ins['post_code']          = $request->post_code;
                 $ins['email']           =       $request->email;
                 $ins['county']     =   $request->county;

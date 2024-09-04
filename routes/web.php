@@ -27,6 +27,7 @@ use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdminTrainingController;
 use App\Http\Controllers\Admin\AdminEquipmentController;
 use App\Http\Controllers\Admin\AdminConsumableController;
+use App\Http\Controllers\Admin\AdminConsumableOrderController;
 use App\Http\Controllers\Admin\AdminLocationController;
 use App\Http\Controllers\Admin\AdminDepartmentController;
 use App\Http\Controllers\Admin\AdminManufacturerController;
@@ -325,8 +326,14 @@ Route::middleware(['checkadmin'])->group(function () {
         Route::match(['get','post'],'add_consumable', [AdminConsumableController::class, 'add_consumable']);
         Route::match(['get','post'],'edit_consumable/{id}', [AdminConsumableController::class, 'edit_consumable']);
         Route::get('consumable_status/{id}/{status}', [AdminConsumableController::class, 'consumable_status']);
-        Route::get('download_consumable_pdf/{id}', [AdminConsumableController::class, 'downloadPDF']);
-        Route::get('delete_consumable/{id}', [AdminConsumableController::class, 'destroy']);
+        Route::get('consumable_list', [AdminConsumableController::class, 'consumable_list']);
+
+        Route::get('consumables_order', [AdminConsumableOrderController::class, 'index']);
+        Route::post('get_consumables_order', [AdminConsumableOrderController::class, 'get_consumables']);
+        Route::match(['get','post'],'add_consumable_order', [AdminConsumableOrderController::class, 'add_consumable']);
+        Route::match(['get','post'],'edit_consumable_order/{id}', [AdminConsumableOrderController::class, 'edit_consumable']);
+        Route::get('download_consumable_pdf/{id}', [AdminConsumableOrderController::class, 'downloadPDF']);
+        Route::get('delete_consumable/{id}', [AdminConsumableOrderController::class, 'destroy']);
         //Location
 
         Route::get('locations', [AdminLocationController::class, 'index']);
