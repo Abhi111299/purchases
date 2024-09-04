@@ -11,7 +11,7 @@
         <div class="col-sm-12">
             <div class="card panel-bd">
                 <div class="card-body">
-                  <form id="leave_form" action="{{ url('admin/edit_consumable/' . $consumable->id) }}" method="post">
+                  <form id="leave_form" action="{{ url('admin/edit_consumable_order/' . $consumable->id) }}" method="post">
                     @csrf
                     <div class="row">
                       <!-- Supplier and other fields populated with $consumable data -->

@@ -16,4 +16,8 @@ class Supplier extends Model
 
     protected $fillable = ['supplier_name','address', 'state', 'post_code','county','email','phone', 'created_at','updated_at'];
 
+    public function consumables()
+    {
+        return $this->hasMany(Consumabl::class, 'supplier_name');
+    }
 }
