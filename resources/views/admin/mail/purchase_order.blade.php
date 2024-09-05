@@ -37,8 +37,8 @@
             <div class="pack-details" style="box-sizing: border-box; padding-left: 20px; float: left; width: 100%;">
                <h3 style="font-size: 13px;">Hello,</h3>
                <h1>{{ $username }}</h1>
-                <h5>{{ $purchase_order }}</h5>
-                <h5>{{ $purchase_order_date }}</h5>
+                <h5>Purchase order Number : {{ $purchase_order }}</h5>
+                <h5>Purchase order Date : {{ $purchase_order_date }}</h5>
                
                <h5>please saw attched PDF file for the complete detail</h5>
                <h4>Regards,</h4>

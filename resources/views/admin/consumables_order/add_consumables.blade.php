@@ -21,8 +21,8 @@
       <option value="">Select Supplier</option>
       <!-- Options will be populated dynamically -->
     </select>
-    @if ($errors->has("supplier_id"))
-      <small style="color: red">{{ $errors->first("supplier_id") }}</small>
+    @if ($errors->has("supplier_name"))
+      <small style="color: red">{{ $errors->first("supplier_name") }}</small>
     @endif
   </div>
 </div>

@@ -18,7 +18,15 @@
                       <div class="col-md-6 mb-3">
                         <div class="form-group">
                           <label class="form-label">Supplier Name</label>
-                          <input type="text" class="form-control" name="supplier_name" value="{{ old('supplier_name', $consumable->supplier_name) }}" placeholder="Enter Supplier Name" autocomplete="off">
+                          <select class="form-control" name="supplier_name" id="supplier_name">
+      <option value="">Select Supplier</option>
+      @foreach($supplier as $availableSupplier)
+            <option value="{{ $availableSupplier->id }}" 
+                {{ $consumable->supplier_name == $availableSupplier->id ? 'selected' : '' }}>
+                {{ $availableSupplier->supplier_name }}
+            </option>
+        @endforeach
+    </select>
                           @if ($errors->has('supplier_name'))
                           <small style="color: red">{{ $errors->first('supplier_name') }}</small>
                           @endif
@@ -123,6 +131,7 @@
                                         <th>Item Description</th>
                                         <th>Quantity</th>
                                         <th>Cost</th>
+                                        <th>Total</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -131,18 +140,21 @@
                                   <tr>
                                     <td>{{ $index + 1 }}</td>
                                     <td>
-                                    <select class="form-control item-select" name="supplier[{{ $index }}][item]">
-                                      <option value="">Select Item</option>
-                                      @foreach($item as $availableItem) 
-                                      <option value="">
-                                      {{ $availableItem }}
-                                      </option>
-                                      @endforeach 
-                                    </select>
+                                    <select class="form-control item-select consumable_name" name="consumable[0][item]" id="consumable_name">
+                          <option value="">Select Item</option>
+                          @foreach($items as $availableItem)
+            <option value="{{ $availableItem->consumable_id }}" 
+                {{ $item->item == $availableItem->consumable_id ? 'selected' : '' }}>
+                {{ $availableItem->consumable_name }}
+            </option>
+        @endforeach
+                        </select>
                                     </td>
-                                    <td><input type="text" class="form-control" name="supplier[{{ $index }}][description]" value="{{ $item->description }}" placeholder="Item Description"></td>
-                                    <td><input type="number" class="form-control quantity" name="supplier[{{ $index }}][quantity]" value="{{ $item->quantity }}" placeholder="Quantity"></td>
-                                    <td><input type="number" class="form-control cost" name="supplier[{{ $index }}][cost]" value="{{ $item->cost }}" placeholder="Cost"></td>
+                                    <td><input type="text" class="form-control" name="consumable[{{ $index }}][description]" value="{{ $item->description }}" placeholder="Item Description"></td>
+                                    <td><input type="number" class="form-control quantity" name="consumable[{{ $index }}][quantity]" value="{{ $item->quantity }}" placeholder="Quantity"></td>
+                                    <td><input type="number" class="form-control cost" name="consumable[{{ $index }}][cost]" value="{{ $item->cost }}" placeholder="Cost"></td>
+                                    <td><input type="number" class="form-control total_per_item" name="consumable[{{ $index }}][total_per_item]" value="{{ $item->total_per_item }}" placeholder="Cost"></td>
+                                    
                                     <td>
                                     <button type="button" class="btn btn-danger remove-row">
                                     <i class="fa fa-trash"></i>
@@ -210,45 +222,44 @@
 @endsection
 @section("custom_script")
   <script>
-    $(function() {
+   $(function() {
   let rowIndex = 1;
+  
 
-  fetchSuppliers();
-
-  function fetchSuppliers() {
+  function fetchConsumables() {debugger;
     $.ajax({
-      url: '{{ url("admin/supplier_list") }}', // Replace with your API endpoint
+      url: '{{ url("admin/consumable_list") }}', // Replace with your API endpoint
       method: 'GET',
       success: function(data) {
         let options = '<option value="">Select Item</option>';
-        $.each(data.suppliers, function(index, supplier) {
-          options += `<option value="${supplier.id}">${supplier.supplier_name}</option>`;
+        $.each(data.consumable, function(index, consumable) {
+          options += `<option value="${consumable.consumable_id}">${consumable.consumable_name}</option>`;
         });
-        // Update existing and future dropdowns
-        $('#supplier_table select').each(function() {
-          $(this).html(options);
-        });
+        // Populate the consumable dropdowns
+        $('.consumable_name').html(options);
       },
       error: function(xhr) {
-        console.error('Failed to fetch suppliers:', xhr);
+        console.error('Failed to fetch consumables:', xhr);
       }
     });
   }
 
   $('#supplier_table').on('click', '.add-row', function() {
-    fetchSuppliers();
+    fetchConsumables();
+    fetchConsumables();
     $('#supplier_table tbody').find('#subtotal_row').before(`
       <tr>
         <td>${rowIndex + 1}</td>
         <td>
-          <select class="form-control item-select" name="supplier[${rowIndex}][item]">
+          <select class="form-control item-select consumable_name" name="consumable[${rowIndex}][item]" id="consumable_name">
             <option value="">Select Item</option>
             <!-- Add options dynamically or statically -->
           </select>
         </td>
-        <td><input type="text" class="form-control" name="supplier[${rowIndex}][description]" placeholder="Item Description"></td>
-        <td><input type="number" class="form-control quantity" name="supplier[${rowIndex}][quantity]" placeholder="Quantity"></td>
-        <td><input type="number" class="form-control cost" name="supplier[${rowIndex}][cost]" placeholder="Cost"></td>
+        <td><input type="text" class="form-control" name="consumable[${rowIndex}][description]" placeholder="Item Description"></td>
+        <td><input type="number" class="form-control quantity" name="consumable[${rowIndex}][quantity]" placeholder="Quantity"></td>
+        <td><input type="number" class="form-control cost" name="consumable[${rowIndex}][cost]" placeholder="Cost"></td>
+        <td><input type="number" class="form-control total_per_item" name="consumable[${rowIndex}][total_per_item]" placeholder="Total Per Item" readonly></td> <!-- New column for Total Per Item -->
         <td>
           <button type="button" class="btn btn-danger remove-row">
             <i class="fa fa-trash"></i>
@@ -260,6 +271,10 @@
       </tr>
     `);
     rowIndex++;
+  });
+
+  $(document).on('input', '.quantity, .cost', function() {
+    calculateRowTotal($(this).closest('tr'));
     calculateTotals();
   });
 
@@ -268,29 +283,30 @@
     calculateTotals();
   });
 
-  $('#supplier_table').on('input', '.quantity, .cost', function() {
-    calculateTotals();
-  });
+  function calculateRowTotal(row) {
+    const quantity = parseFloat(row.find('.quantity').val()) || 0;
+    const cost = parseFloat(row.find('.cost').val()) || 0;
+    const totalPerItem = quantity * cost;
+    row.find('.total_per_item').val(totalPerItem.toFixed(2));
+  }
 
   function calculateTotals() {
     let subtotal = 0;
-    $('#supplier_table .quantity').each(function() {
-      let quantity = parseFloat($(this).val()) || 0;
-      let row = $(this).closest('tr');
-      let cost = parseFloat(row.find('.cost').val()) || 0;
-      subtotal += quantity * cost;
+    $('#supplier_table tbody tr').each(function() {
+      const totalPerItem = parseFloat($(this).find('.total_per_item').val()) || 0;
+      subtotal += totalPerItem;
     });
 
-    let shipping = parseFloat($('#shipping').val()) || 0;
-    let totalWithoutGST = subtotal + shipping;
-    let gst = totalWithoutGST * 0.10;
-    let total = totalWithoutGST + gst;
-
     $('#subtotal').val(subtotal.toFixed(2));
-    $('#total_without_gst').val(totalWithoutGST.toFixed(2));
+    const shipping = parseFloat($('#shipping').val()) || 0;
+    const totalWithoutGst = subtotal + shipping;
+    $('#total_without_gst').val(totalWithoutGst.toFixed(2));
+    const gst = totalWithoutGst * 0.10; // Assuming GST is 10%
     $('#gst').val(gst.toFixed(2));
+    const total = totalWithoutGst + gst;
     $('#total').val(total.toFixed(2));
   }
 });
+
   </script>
 @endsection

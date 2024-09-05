@@ -18,4 +18,9 @@ class ConsumableItem extends Model
     {
         return $this->belongsTo(Consumabl::class, 'consumable_id', 'id');
     }
+
+    public function consumableItem()
+    {
+        return $this->belongsTo(Consumable::class, 'item', 'id');
+    }
 }
