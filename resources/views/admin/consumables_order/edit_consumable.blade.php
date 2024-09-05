@@ -18,7 +18,7 @@
                       <div class="col-md-6 mb-3">
                         <div class="form-group">
                           <label class="form-label">Supplier Name</label>
-                          <select class="form-control" name="supplier_name" id="supplier_name">
+                          <select class="form-control" name="supplier_name" id="supplier_name" onchange="fetchSupplierDetails(this.value)">
       <option value="">Select Supplier</option>
       @foreach($supplier as $availableSupplier)
             <option value="{{ $availableSupplier->id }}" 
@@ -35,7 +35,7 @@
                       <div class="col-md-6 mb-3">
                         <div class="form-group">
                           <label class="form-label">Supplier Address</label>
-                          <input type="text" class="form-control" name="supplier_address" value="{{ old("supplier_address", $consumable->supplier_address) }}"
+                          <input type="text" class="form-control" id="address" name="supplier_address" value="{{ old("supplier_address", $consumable->supplier_address) }}"
                             placeholder="Enter Supplier Address" autocomplete="off">
                           @if ($errors->has("supplier_address"))
                             <small style="color: red">{{ $errors->first("supplier_address") }}</small>
@@ -45,7 +45,7 @@
                       <div class="col-md-6 mb-3">
                         <div class="form-group">
                           <label class="form-label">Phone Number</label>
-                          <input type="number" class="form-control" name="phone" value="{{ old("phone", $consumable->phone) }}"
+                          <input type="number" id="phone" class="form-control" name="phone" value="{{ old("phone", $consumable->phone) }}"
                             placeholder="Enter Phone Number" autocomplete="off">
                           @if ($errors->has("phone"))
                             <small style="color: red">{{ $errors->first("phone") }}</small>
@@ -78,7 +78,7 @@
                       <div class="col-md-6 mb-3">
                         <div class="form-group">
                           <label class="form-label">Email</label>
-                          <input type="text" class="form-control" name="email" 
+                          <input type="text" id="email" class="form-control" name="email" 
                           value="{{ old('email', $consumable->email) }}" 
                           placeholder="Enter email" autocomplete="off">
 
@@ -307,6 +307,33 @@
     $('#total').val(total.toFixed(2));
   }
 });
+
+
+function fetchSupplierDetails(supplierId) {
+        if (supplierId) {
+            $.ajax({
+                url: '{{ url("admin/supplier_details") }}/' + supplierId,  // Assuming this is your API route to fetch supplier details
+                method: 'GET',
+                success: function(response) { console.log(response);
+                    if (response.success) {
+                        $('#address').val(response.supplier.address);
+                        $('#phone').val(response.supplier.phone);
+                        $('#email').val(response.supplier.email);
+                    } else {
+                        alert('Supplier details could not be fetched');
+                    }
+                },
+                error: function(xhr) {
+                    console.error('Failed to fetch supplier details:', xhr);
+                }
+            });
+        } else {
+            // Clear the fields if no supplier is selected
+            $('#address').val('');
+            $('#phone').val('');
+            $('#email').val('');
+        }
+  }
 
   </script>
 @endsection

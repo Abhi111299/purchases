@@ -200,6 +200,7 @@ Route::middleware(['checkadmin'])->group(function () {
         Route::post('get_supplier_lists', [AdminSupplierController::class, 'get_supplier_list']);
         Route::match(['get','post'],'edit_supplier/{id}', [AdminSupplierController::class, 'edit_supplier']);
         Route::get('delete_supplier/{id}', [AdminSupplierController::class, 'destroy']);
+        Route::get('supplier_details/{id}', [AdminSupplierController::class, 'supplier_details']);
         Route::get('supplier_list', [AdminSupplierController::class, 'supplier_list']);
 
         //Asset

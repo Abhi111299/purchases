@@ -84,6 +84,22 @@ class AdminSupplierController extends Controller
         return view('admin.supplier.add_supplier');
     }
 
+    public function supplier_details(Request $request, $id){
+        $supplier = Supplier::find($id);// dd($supplier);
+
+        if ($supplier) {
+            return response()->json([
+                'success' => true,
+                'supplier' => $supplier
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Supplier not found'
+            ]);
+        }
+    }
+
     public function get_supplier_list(Request $request)
     {
         if ($request->ajax()) {
