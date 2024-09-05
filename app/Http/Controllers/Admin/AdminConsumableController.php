@@ -147,7 +147,7 @@ class AdminConsumableController extends Controller
             return redirect('admin/dashboard');
         }
 
-        $data['consumable'] = Consumable::orderby('consumable_id', 'asc')->get();
+        $data['consumable'] = Consumable::orderby('consumable_id', 'asc')->get();//dd($data['consumable']);
         $data['set'] = 'consumable';
         return $data;
     }

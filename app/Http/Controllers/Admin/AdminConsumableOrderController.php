@@ -178,6 +178,7 @@ class AdminConsumableOrderController extends Controller
                         'description' => $item['description'],
                         'quantity' => $item['quantity'],
                         'cost' => $item['cost'],
+                        'total_per_item' => $item['total_per_item'],    
                     ];
                 }
 
@@ -207,13 +208,13 @@ class AdminConsumableOrderController extends Controller
                 $pdf->save($pdfFilePath);
 
                 $emailData = [
-                    'username' => $request->supplier_name, // Pass any other dynamic data you need
-                    'purchase_order' => $request->purchase_order_number,
+                    'username' => $supplier->supplier_name, // Pass any other dynamic data you need
+                    'purchase_order' => $purchaseOrderNumber,
                     'purchase_order_date' => $request->purchase_order_date
                 ];
 
                 $mail  = $request->email;
-                $uname = $request->supplier_name;
+                $uname = $supplier->supplier_name;
 
                 $subject = 'New Consumable Request';
 
@@ -241,19 +242,20 @@ class AdminConsumableOrderController extends Controller
         if ($request->has('submit')) {
             $rules = [
                 'supplier_name' => 'required|string|max:255',
-                'supplier_address' => 'required|string|max:255',
-                'phone' => 'required|string|max:15',
-                'purchase_order_date' => 'required|date',
-                'quotation_number' => 'required|string|max:50',
-                'email' => 'required|string|max:255',
-                'delivery_date' => 'required|date',
-                'delivery_address' => 'nullable|string',
-                'supplier.*.item' => 'required|string|max:255',
-                'supplier.*.description' => 'nullable|string',
-                'supplier.*.quantity' => 'required|integer|min:1',
-                'supplier.*.cost' => 'required|numeric',
-            ];
-    
+            'supplier_address' => 'required|string|max:255',
+            'phone' => 'required|string|max:15',
+            'purchase_order_date' => 'required|date',
+            'quotation_number' => 'required|string|max:50',
+            'email' => 'required|string|max:255',
+            'delivery_date' => 'required|date',
+            'delivery_address' => 'nullable|string',
+            // 'uploaded_file' => 'nullable|file|mimes:jpg,png,pdf|max:2048',
+            // 'supplier.*.item' => 'required|string|max:255',
+            // 'supplier.*.description' => 'nullable|string',
+            // 'supplier.*.quantity' => 'required|integer|min:1',
+            // 'supplier.*.cost' => 'required|numeric'
+        ];
+
             $messages = [
                 'supplier_name.required' => 'Supplier name is required.',
                 'supplier_name.string' => 'Supplier name must be a string.',
@@ -273,17 +275,22 @@ class AdminConsumableOrderController extends Controller
                 'delivery_date.required' => 'Delivery date is required.',
                 'delivery_date.date' => 'Delivery date must be a valid date.',
                 'delivery_address.string' => 'Delivery address must be a string.',
-                'supplier.*.item.required' => 'Item is required.',
-                'supplier.*.item.string' => 'Item must be a string.',
-                'supplier.*.item.max' => 'Item may not be greater than 255 characters.',
-                'supplier.*.description.string' => 'Item description must be a string.',
-                'supplier.*.quantity.required' => 'Quantity is required.',
-                'supplier.*.quantity.integer' => 'Quantity must be an integer.',
-                'supplier.*.quantity.min' => 'Quantity must be at least 1.',
-                'supplier.*.cost.required' => 'Cost is required.',
-                'supplier.*.cost.numeric' => 'Cost must be a number.',
+                // 'uploaded_file.file' => 'Uploaded file must be a file.',
+                // 'uploaded_file.mimes' => 'Uploaded file must be a file of type: jpg, png, pdf.',
+                // 'uploaded_file.max' => 'Uploaded file may not be greater than 2048 kilobytes.',
+                
+                // Messages for each item in the supplier array
+                // 'supplier.*.item.required' => 'Item is required.',
+                // 'supplier.*.item.string' => 'Item must be a string.',
+                // 'supplier.*.item.max' => 'Item may not be greater than 255 characters.',
+                // 'supplier.*.description.string' => 'Item description must be a string.',
+                // 'supplier.*.quantity.required' => 'Quantity is required.',
+                // 'supplier.*.quantity.integer' => 'Quantity must be an integer.',
+                // 'supplier.*.quantity.min' => 'Quantity must be at least 1.',
+                // 'supplier.*.cost.required' => 'Cost is required.',
+                // 'supplier.*.cost.numeric' => 'Cost must be a number.',
             ];
-    
+
             $validator = Validator::make($request->all(), $rules, $messages);
     
             if ($validator->fails()) {
@@ -326,7 +333,7 @@ class AdminConsumableOrderController extends Controller
                 }
                 DB::table('consumable_items')->where('consumable_id', $id)->delete();
     
-                $items = $request->input('supplier', []);
+                $items = $request->input('consumable', []);
                 foreach ($items as $item) {
                     DB::table('consumable_items')->insert([
                         'consumable_id' => $id,
@@ -346,6 +353,7 @@ class AdminConsumableOrderController extends Controller
                         'description' => $item['description'],
                         'quantity' => $item['quantity'],
                         'cost' => $item['cost'],
+                        'total_per_item' => $item['total_per_item']
                     ];
                 }
 
@@ -365,7 +373,7 @@ class AdminConsumableOrderController extends Controller
                     'purchase_order_number' => $purchaseOrderNumber,
                     'delivery_date' => date('Y-m-d', strtotime($request->delivery_date)),
                     'items' => $items, // Passing items array to the view
-                    'consumables' =>  $request->input('supplier', [])
+                    'consumables' =>  $request->input('consumable', [])
                 ]);
     
                 // Save the PDF to the desired path
@@ -401,10 +409,11 @@ class AdminConsumableOrderController extends Controller
         if (!isset($data['consumable'])) {
             return redirect('admin/consumables');
         }
-    
-        $data['items'] = $data['consumable']->items; // Assuming you want all items for the dropdown
+        
+        $data['supplier'] = Supplier::all();
+        $data['items'] = Consumable::all();// dd($data['items']);// Assuming you want all items for the dropdown
         $data['set'] = 'consumables';
-        return view('admin.consumables.edit_consumable', $data);
+        return view('admin.consumables_order.edit_consumable', $data);
     }
 
     public function destroy($id)

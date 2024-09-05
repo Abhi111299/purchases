@@ -60,6 +60,7 @@
 <div class="header">
     <div>
         <img src="{{ public_path('images/pdflogo.png')  }}" alt="Company Logo" style="max-height: 100px;">
+        <h3>ARL Laborator</h3>
     </div>
     <div class="company-details">
         <strong>Head Office - Sydney</strong><br>
@@ -112,6 +113,7 @@
             <th>Item Description</th>
             <th>Quantity</th>
             <th>Cost</th>
+            <th>Total Cost</th>
         </tr>
     </thead>
     <tbody>
@@ -122,6 +124,7 @@
             <td>{{ $consumable['description'] ?? 'N/A' }}</td>
             <td>{{ $consumable['quantity'] }}</td>
             <td>${{ number_format($consumable['cost'], 2) }}</td>
+            <td>${{ number_format($consumable['total_per_item'], 2) }}</td>
         </tr>
         @endforeach
     </tbody>
