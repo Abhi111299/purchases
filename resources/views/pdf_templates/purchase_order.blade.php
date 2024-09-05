@@ -15,10 +15,9 @@
             padding: 10px 0;
         }
         .header img {
-            max-width: 200px;
-            height: auto;
+            max-height: 100px;
         }
-        .header .company-details {
+        .company-details {
             text-align: right;
             font-size: 12px;
         }
@@ -37,21 +36,21 @@
             background-color: #f2f2f2;
         }
         .supplier-details {
-            margin-top: 5px; /* Add space between the first and second tables */
+            margin-top: 5px; /* Space between tables */
         }
         .items-table {
-            margin-top: 10px; /* No extra space between the second and third tables */
+            margin-top: 10px;
         }
         .total-section {
-            margin-top: 0; /* No extra space */
+            margin-top: 0;
         }
         .terms {
             margin-top: 20px;
             font-size: 10px;
         }
-        /* Ensure equal column width for the Cost column */
+        /* Set equal width for Cost column */
         .items-table td:nth-child(5), .total-section td:nth-child(2) {
-            width: 100px; /* Adjust width as needed */
+            width: 100px;
         }
     </style>
 </head>
@@ -59,8 +58,8 @@
 
 <div class="header">
     <div>
-        <img src="{{ public_path('images/pdflogo.png')  }}" alt="Company Logo" style="max-height: 100px;">
-        <h3>ARL Laborator</h3>
+        <img src="{{ public_path('images/pdflogo.png') }}" alt="Company Logo">
+        <h3>ARL Laboratory</h3>
     </div>
     <div class="company-details">
         <strong>Head Office - Sydney</strong><br>
@@ -99,9 +98,9 @@
     </tr>
     <tr>
         <th>Requested By</th>
-        <td>{{ $supplier_name }}</td>
+        <td>{{ $requested_by }}</td>
         <th>Approved By</th>
-        <td>{{ $supplier_name }}</td>
+        <td>{{ $approved_by }}</td>
     </tr>
 </table>
 

@@ -10,6 +10,7 @@ use Validator;
 use DB;
 use DataTables;
 use App\Models\Consumabl;
+use App\Models\Staff;
 use App\Models\Consumable;
 use App\Models\Supplier;
 use Illuminate\Support\Facades\Storage;
@@ -67,6 +68,7 @@ class AdminConsumableOrderController extends Controller
             'supplier_address' => 'required|string|max:255',
             'phone' => 'required|string|max:15',
             'purchase_order_date' => 'required|date',
+            'approval_request_id' => 'required',
             'quotation_number' => 'required|string|max:50',
             'email' => 'required|string|max:255',
             'delivery_date' => 'required|date',
@@ -80,6 +82,7 @@ class AdminConsumableOrderController extends Controller
 
             $messages = [
                 'supplier_name.required' => 'Supplier name is required.',
+                'approval_request_id.required' => 'Please select manager.',
                 'supplier_name.string' => 'Supplier name must be a string.',
                 'supplier_name.max' => 'Supplier name may not be greater than 255 characters.',
                 'supplier_address.required' => 'Supplier address is required.',
@@ -119,12 +122,6 @@ class AdminConsumableOrderController extends Controller
             if ($validator->fails()) {
                 return redirect()->back()->withErrors($validator->errors())->withInput();
             } else {
-                // $check_consumable = Consumabl::where('supplier_name', $request->supplier_name)->count();
-
-                // if ($check_consumable > 0) {
-                //     return redirect()->back()->with('error', 'Consumable Already Added')->withInput();
-                // }
-
                 $filePath = null;
                     if ($request->hasFile('uploaded_file')) {
                     $file = $request->file('uploaded_file');
@@ -140,6 +137,7 @@ class AdminConsumableOrderController extends Controller
                 $ins['supplier_name']       = $request->supplier_name;
                 $ins['supplier_address']       = $request->supplier_address;
                 $ins['phone']       = $request->phone;
+                $ins['approval_request_id']  = $request->approval_request_id;
                 $ins['purchase_order_date']       = date('Y-m-d', strtotime($request->purchase_order_date));
                 $ins['quotation_number']       = $request->quotation_number;
                 $ins['email']       = $request->email;
@@ -170,6 +168,12 @@ class AdminConsumableOrderController extends Controller
                     ]);
                 }
 
+                $approver_name = Staff::find($request->approval_request_id); 
+                foreach($approver_name as $approver_name){
+                    $approver_fname = $approver_name->staff_fname;
+                    $approver_lname = $approver_name->staff_lname;
+                }    
+                $approver_name = $approver_fname . " " . $approver_lname;
                 $itemsWithNames = [];
                 foreach ($items as $item) {
                     $itemDetails = Consumable::find($item['item']);
@@ -193,6 +197,8 @@ class AdminConsumableOrderController extends Controller
                     'email' => $request->email,
                     'delivery_address' => $request->delivery_address,
                     'subtotal' => $request->subtotal,
+                    'approved_by' => $approver_name,
+                    'requested_by'  =>  Auth::guard('admin')->user()->admin_name,
                     'shipping' => $request->shipping,
                     'total_without_gst' => $request->total_without_gst,
                     'gst' => $request->gst,
@@ -232,6 +238,10 @@ class AdminConsumableOrderController extends Controller
                 }
             }
         }
+
+        $where_staff['staff_role'] = 1;
+        $where_staff['staff_status'] = 1;
+        $data['staffs'] = Staff::where($where_staff)->orderby('staff_fname', 'asc')->get();
 
         $data['set'] = 'consumables';
         return view('admin.consumables_order.add_consumables', $data);

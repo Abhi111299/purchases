@@ -3,7 +3,7 @@
 @section("contents")
   <section class="content-header">
     <div class="header-title">
-      <h4 class="text-white mb-0">Add Consumable</h4>
+      <h4 class="text-white mb-0">Order Consumable</h4>
     </div>
   </section>
   <section class="content">
@@ -17,10 +17,10 @@
               <div class="col-md-6 mb-3">
   <div class="form-group">
     <label class="form-label">Supplier Name</label>
-    <select class="form-control" name="supplier_name" id="supplier_name">
-      <option value="">Select Supplier</option>
-      <!-- Options will be populated dynamically -->
-    </select>
+    <select class="form-control" name="supplier_name" id="supplier_name" onchange="fetchSupplierDetails(this.value)">
+  <option value="">Select Supplier</option>
+</select>
+
     @if ($errors->has("supplier_name"))
       <small style="color: red">{{ $errors->first("supplier_name") }}</small>
     @endif
@@ -29,23 +29,39 @@
                 <div class="col-md-6 mb-3">
                   <div class="form-group">
                     <label class="form-label">Supplier Address</label>
-                    <input type="text" class="form-control" name="supplier_address" value="{{ old("supplier_address") }}"
+                    <input type="text" id="address" class="form-control" name="supplier_address" value="{{ old("supplier_address") }}"
                       placeholder="Enter Supplier Address" autocomplete="off">
                     @if ($errors->has("supplier_address"))
                       <small style="color: red">{{ $errors->first("supplier_address") }}</small>
                     @endif
                   </div>
+                  
                 </div>
+                
                 <div class="col-md-6 mb-3">
                   <div class="form-group">
                     <label class="form-label">Phone Number</label>
-                    <input type="number" class="form-control" name="phone" value="{{ old("phone") }}"
+                    <input type="number" id="phone" class="form-control" name="phone" value="{{ old("phone") }}"
                       placeholder="Enter Phone Number" autocomplete="off">
                     @if ($errors->has("phone"))
                       <small style="color: red">{{ $errors->first("phone") }}</small>
                     @endif
                   </div>
                 </div>
+                <div class="col-md-6 mb-3">
+                <div class="form-group">
+                    <label class="form-label">Requested to Approval</label>
+                    <select class="form-control selectbox" id="approval_request_id" name="approval_request_id[]">
+                      <option value="">Select</option>
+                      @foreach ($staffs as $staff)
+                        <option value="{{ $staff->staff_id }}">{{ $staff->staff_fname . " " . $staff->staff_lname }}
+                        </option>
+                      @endforeach
+                    </select>
+                    @if ($errors->has("approval_request_id"))
+                      <small style="color: red">{{ $errors->first("approval_request_id") }}</small>
+                    @endif
+                </div></div>
                 <div class="col-md-6 mb-3">
                   <div class="form-group">
                     <label class="form-label">Purchase Order Date</label>
@@ -70,7 +86,7 @@
                 <div class="col-md-6 mb-3">
                   <div class="form-group">
                     <label class="form-label">Email</label>
-                    <input type="text" class="form-control" name="email" value="{{ old('email') }}"
+                    <input type="text" id="email" class="form-control" name="email" value="{{ old('email') }}"
                     placeholder="Enter email" autocomplete="off" step="0.01" min="0">
 
                     @if ($errors->has("email"))
@@ -221,6 +237,8 @@
     });
   }
 
+  
+
   fetchConsumables();
 
   function fetchConsumables() {
@@ -303,6 +321,32 @@
     $('#total').val(total.toFixed(2));
   }
 });
+
+function fetchSupplierDetails(supplierId) {
+        if (supplierId) {
+            $.ajax({
+                url: '{{ url("admin/supplier_details") }}/' + supplierId,  // Assuming this is your API route to fetch supplier details
+                method: 'GET',
+                success: function(response) { console.log(response);
+                    if (response.success) {
+                        $('#address').val(response.supplier.address);
+                        $('#phone').val(response.supplier.phone);
+                        $('#email').val(response.supplier.email);
+                    } else {
+                        alert('Supplier details could not be fetched');
+                    }
+                },
+                error: function(xhr) {
+                    console.error('Failed to fetch supplier details:', xhr);
+                }
+            });
+        } else {
+            // Clear the fields if no supplier is selected
+            $('#address').val('');
+            $('#phone').val('');
+            $('#email').val('');
+        }
+  }
 
   </script>
 @endsection
